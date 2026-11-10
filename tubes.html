@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun, Sayang! 💕</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fredoka:wght@400;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome & Canvas Confetti -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #ffe5ec 35%, #f3e8ff 70%, #ffe5ec 100%);
+            overflow-x: hidden;
+        }
+
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .font-cute {
+            font-family: 'Fredoka', cursive;
+        }
+
+        /* Floating Hearts Animation Background */
+        .bg-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatUp 8s infinite linear;
+            opacity: 0.7;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Envelope Styles */
+        .envelope-wrapper {
+            perspective: 1000px;
+        }
+        
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background-color: #ffb7b2;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 15px 35px rgba(255, 133, 161, 0.25);
+            cursor: pointer;
+            transition: transform 0.4s ease;
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid #ff9aa2;
+            border-right: 160px solid #ff9aa2;
+            border-top: 110px solid transparent;
+            border-bottom: 110px solid #ffb7b2;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #ff85a1;
+            transform-origin: top;
+            transition: transform 0.6s ease 0.2s, z-index 0.2s;
+            z-index: 4;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .letter {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            right: 15px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.6s ease 0.4s, opacity 0.4s ease;
+            z-index: 2;
+            max-height: 180px;
+            overflow: hidden;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(-130px) scale(1.05);
+            z-index: 5;
+            max-height: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        /* Birthday Cake & Candle Animation */
+        .cake-container {
+            position: relative;
+            width: 220px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .cake-plate {
+            width: 240px;
+            height: 16px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            left: -10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .layer-bottom {
+            width: 200px;
+            height: 70px;
+            background: linear-gradient(to right, #ffb7b2, #ff85a1);
+            border-radius: 12px 12px 0 0;
+            position: absolute;
+            bottom: 16px;
+            left: 10px;
+            box-shadow: inset 0 -10px 0 rgba(0,0,0,0.05);
+        }
+
+        .layer-top {
+            width: 150px;
+            height: 60px;
+            background: linear-gradient(to right, #e2ece9, #b5ead7);
+            border-radius: 12px 12px 0 0;
+            position: absolute;
+            bottom: 86px;
+            left: 35px;
+            box-shadow: inset 0 -8px 0 rgba(0,0,0,0.05);
+        }
+
+        .icing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 10px 10px 10px 10px;
+        }
+
+        .candle {
+            width: 16px;
+            height: 45px;
+            background: repeating-linear-gradient(45deg, #c8b6ff, #c8b6ff 8px, #ffffff 8px, #ffffff 16px);
+            position: absolute;
+            bottom: 146px;
+            left: 102px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .flame {
+            width: 16px;
+            height: 24px;
+            background: #ffb703;
+            border-radius: 50% 50% 35% 35%;
+            position: absolute;
+            top: -24px;
+            left: 0;
+            box-shadow: 0 0 15px #ffb703, 0 0 30px #fb8500;
+            animation: flicker 0.6s infinite alternate ease-in-out;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); opacity: 0.9; }
+            100% { transform: scale(1.15) rotate(2deg); opacity: 1; }
+        }
+
+        .flame.blown-out {
+            opacity: 0;
+            transform: scale(0.2) translateY(-10px);
+            pointer-events: none;
+        }
+
+        /* Smoke effect */
+        .smoke {
+            position: absolute;
+            top: -30px;
+            left: 3px;
+            width: 10px;
+            height: 10px;
+            background: rgba(200, 200, 200, 0.6);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .smoke.active {
+            animation: smokeRise 2s ease-out forwards;
+        }
+
+        @keyframes smokeRise {
+            0% { opacity: 0.8; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(3); }
+        }
+
+        /* Polaroid Photo Effect */
+        .polaroid {
+            background: white;
+            padding: 12px 12px 25px 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .polaroid:hover {
+            transform: scale(1.06) rotate(0deg) !important;
+            box-shadow: 0 20px 35px rgba(255, 133, 161, 0.3);
+            z-index: 20;
+        }
+
+        /* 3D Flip Card */
+        .flip-card {
+            perspective: 1000px;
+            height: 180px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flip-card.flipped .flip-card-inner,
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body class="relative text-gray-700 min-h-screen">
+
+    <!-- Floating Background Particles Container -->
+    <div id="particles-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <!-- Floating Audio Control Button -->
+    <div class="fixed top-5 right-5 z-50">
+        <button id="musicToggleBtn" class="glass p-3.5 px-5 rounded-full shadow-lg flex items-center gap-3 text-pink-600 hover:bg-white transition-all transform hover:scale-105 active:scale-95 border border-pink-200">
+            <i id="musicIcon" class="fas fa-music text-lg animate-bounce"></i>
+            <span id="musicText" class="text-xs font-semibold tracking-wide">Putar Musik 🎵</span>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 py-8 space-y-24">
+
+        <!-- SECTION 1: HERO / WELCOME -->
+        <section class="min-h-[85vh] flex flex-col justify-center items-center text-center relative pt-10">
+            <!-- Cute Badge -->
+            <div class="inline-flex items-center gap-2 bg-pink-100 border border-pink-200 text-pink-600 px-4 py-1.5 rounded-full text-xs md:text-sm font-medium mb-6 shadow-sm">
+                <span class="animate-pulse">✨</span> Hari Spesial Abeyy💕 <span class="animate-pulse">✨</span>
+            </div>
+
+            <!-- Main Title -->
+            <h1 class="text-4xl md:text-6xl font-bold text-gray-800 leading-tight mb-4">
+                Selamat Ulang Tahun, <br>
+                <span class="font-handwriting text-5xl md:text-7xl text-pink-500 block mt-2 transform -rotate-1">Sayangku! 💕</span>
+            </h1>
+
+            <p class="text-gray-600 text-sm md:text-base max-w-md mx-auto mb-8 leading-relaxed">
+                <br>Tanggal 11 November 2006 dimana kamu dilahirkan,
+                 Aku selalu berharap, kamu selalu dihiasi dengan banyak senyuman, kebahagiaan, dan kasih sayang tak terhingga.
+            </p>
+
+            <!-- Scroll Action Button -->
+            <a href="#letter-section" class="group relative inline-flex items-center gap-3 bg-gradient-to-r from-pink-400 to-rose-400 text-white font-semibold px-8 py-4 rounded-full shadow-lg hover:shadow-pink-300/50 hover:from-pink-500 hover:to-rose-500 transition-all transform hover:-translate-y-1 active:translate-y-0">
+                <span>Nihhhh akuu punyaa kado lohhh,
+                    <br> coba bukaa 🎁</span>
+                <i class="fas fa-chevron-down group-hover:translate-y-1 transition-transform"></i>
+            </a>
+
+            <!-- Cute Mascot/Decoration -->
+            <div class="mt-12 text-4xl animate-bounce">
+                🧸
+            </div>
+        </section>
+
+
+        <!-- SECTION 2: INTERACTIVE ENVELOPE & LETTER -->
+        <section id="letter-section" class="flex flex-col items-center justify-center py-10 scroll-mt-10">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-cute">Surat spesial Untukmu 💌</h2>
+                <p class="text-xs md:text-sm text-gray-500 mt-1">Klik aja sayang amplop nyaa!</p>
+            </div>
+
+            <div class="envelope-wrapper my-8">
+                <div id="envelope" class="envelope" onclick="toggleEnvelope()">
+                    <div class="envelope-flap"></div>
+                    
+                    <!-- Inside Letter -->
+                    <div class="letter text-gray-800">
+                        <div class="text-right text-xs text-pink-400 font-medium mb-2">Hari Ulang Tahun mu ✨</div>
+                        <h3 class="font-handwriting text-2xl text-pink-600 mb-2">Dear Abeyyy,</h3>
+                        <p class="text-xs md:text-sm leading-relaxed text-gray-600 space-y-2">
+                            Selamat ulang tahun yaaaaaa, Makasiiii selalu adaa buatt akuu 
+                            <br><br>
+                            Aku cuma bisa doain yang terbaik buat kamuu, semoga kamu selalu di sehatkan, dipanjangkan umur nyaa, selalu adaa dalam lindungann Allah dan orang orang baik,
+                            bisa terus berbakti kepada ortu kamuu jugaaa, and I hope kamuu sukses dengan cara mu sendiri, kamu bisa terus di sayangg olehh siapapunn ituu,
+                            aku mauu liat kamuu bahagia teruss, kamu senengg akuu ikut seneng jugaaa,
+                            intinyaaa doa yang terbaik yaa for u❤️
+                        </p>
+                        <div class="mt-4 text-right">
+                            <span class="font-handwriting text-xl text-pink-500">dari orang yang kamu cinta </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tip Message -->
+            <p id="letterTip" class="text-xs text-pink-500 font-medium mt-16 bg-pink-50 px-4 py-2 rounded-full border border-pink-100">
+                👆 klik ajaa amplop nyaa, kalo mau di tutup lagi klik lagii yaaa sayanggg!
+            </p>
+        </section>
+
+
+        <!-- SECTION 3: BIRTHDAY CAKE & CANDLE BLOW -->
+        <section class="glass rounded-3xl p-8 md:p-12 text-center shadow-xl border border-pink-100 relative overflow-hidden">
+            <div class="max-w-md mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-cute mb-2">Make a Wish dann coba kamu tiup lilinya! 🎂</h2>
+                <p class="text-xs md:text-sm text-gray-500 mb-8">hmmmmm, coba dehh kamu pikirinn apa yang kamu mau, truss <span class="text-pink-500 font-semibold">klik sok apinya</span> buatt kaya niup lilinya, heheee!</p>
+
+                <!-- Interactive Cake -->
+                <div class="cake-container my-6">
+                    <div class="cake-plate"></div>
+                    <div class="layer-bottom">
+                        <div class="icing"></div>
+                    </div>
+                    <div class="layer-top">
+                        <div class="icing"></div>
+                    </div>
+                    
+                    <!-- Candle -->
+                    <div class="candle" onclick="blowOutCandle()">
+                        <div id="flame" class="flame"></div>
+                        <div id="smoke" class="smoke"></div>
+                    </div>
+                </div>
+
+                <!-- Status / Wish Button -->
+                <div id="wishStatus" class="mt-6">
+                    <span class="inline-block bg-yellow-100 text-yellow-700 text-xs px-4 py-2 rounded-full font-medium border border-yellow-200">
+                        🔥 Lilin masih menyala ihhhh cobaa tiup!
+                    </span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SECTION 4: POLAROID MEMORY LANE -->
+        <section class="py-10">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 font-cute">oiyaaa akuu punyaa foto-foto baguss nihhh 📸</h2>
+                <p class="text-xs md:text-sm text-gray-500 mt-1">mungkin ini hanya beberapa moment, nantiii buat selanjutnyaa kitaa kemana yaaa???</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 px-4">
+                
+                <!-- Polaroid 1 -->
+                <div class="polaroid transform -rotate-3">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen1.jpeg" alt="Momen 1" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">🌸</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">Movie Date</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">ini abis nonton dan bandung dehh kayanyaa</p>
+                </div>
+
+                <!-- Polaroid 2 -->
+                <div class="polaroid transform rotate-2 md:translate-y-4">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen2.jpeg" alt="Momen 2" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">✨</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">With Almet</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">Aku Telyuuu Kamu Uncill</p>
+                </div>
+
+                <!-- Polaroid 3 -->
+                <div class="polaroid transform -rotate-2">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen3.jpeg" alt="Momen 3" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">🎀</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">Foto Booth</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">Abis ngopss di warung sisi rel nyakkk</p>
+                </div>
+                
+                <!-- Polaroid 4 -->
+                <div class="polaroid transform -rotate-2">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen4.jpeg" alt="Momen 4" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">🎀</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">Malioboro After Merbabu Date</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">Ga apdol ke Yogyakarta kalo gaa ke Malioboro</p>
+                </div>
+
+                <!-- Polaroid 5 -->
+                 <div class="polaroid transform -rotate-2">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen5.jpeg" alt="Momen 5" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">🎀</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">Merbabu Date</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">inii miniatur torean di merbabu via thekelan</p>
+                </div>
+
+                <!-- Polaroid 6 -->
+                 <div class="polaroid transform -rotate-2">
+                    <div class="relative overflow-hidden rounded bg-gray-100 aspect-square mb-3">
+                        <img src="images/momen6.jpeg" alt="Momen 6" class="w-full h-full object-cover">
+                        <span class="absolute top-2 right-2 text-xl">🎀</span>
+                    </div>
+                    <p class="font-handwriting text-xl text-center text-gray-700">Best Sunset</p>
+                    <p class="text-[10px] text-center text-gray-400 mt-1">Kita di merbabu tapi best view nya ada sindoro sumbing and sunset</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="text-center py-12 border-t border-pink-200/50">
+            <p class="font-handwriting text-2xl text-pink-500 mb-2">And the last, Happy Birthday Sayangggggg! 🎉</p>
+        </footer>
+
+    </div>
+
+    <!-- Custom Wish Modal Container -->
+    <div id="wishModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center shadow-2xl transform scale-90 transition-transform duration-300 border-2 border-pink-200">
+            <div class="text-5xl mb-4 animate-bounce">🎉✨</div>
+            <h3 class="text-xl font-bold text-gray-800 font-cute mb-2">Keinginanmu Dicatat Universe!</h3>
+            <p class="text-xs md:text-sm text-gray-600 mb-6 leading-relaxed">
+                Lilin berhasil ditiup! Semoga semua harapan & doa manismu di ulang tahun ini segera dikabulkan.
+            </p>
+            <button onclick="closeModal()" class="w-full bg-pink-500 hover:bg-pink-600 text-white text-sm font-semibold py-3 rounded-full shadow-lg transition-all">
+                Aamiin... Terima Kasih! 💕
+            </button>
+        </div>
+    </div>
+
+    <!-- AUDIO PLAYER HIDDEN FALLBACK -->
+    <!-- Jika punya file mp3 sendiri, ganti src di bawah ini! -->
+    <audio id="bgAudio" loop preload="auto">
+        <source src="https://assets.mixkit.co/music/preview/mixkit-romantic-sunset-688.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        /* ----------------------------------------------------
+         * 1. FLOATING HEARTS & SPARKLES BACKGROUND
+         * ---------------------------------------------------- */
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const icons = ['❤️', '💖', '✨', '🌸', '🎀', '⭐'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'bg-particle';
+                particle.innerText = icons[Math.floor(Math.random() * icons.length)];
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDuration = (Math.random() * 5 + 6) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                particle.style.fontSize = (Math.random() * 14 + 14) + 'px';
+                container.appendChild(particle);
+            }
+        }
+
+        /* ----------------------------------------------------
+         * 2. AUDIO SYNTHESIZER / MUSIC PLAYER
+         * ---------------------------------------------------- */
+        let isPlaying = false;
+        const bgAudio = document.getElementById('bgAudio');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        const musicText = document.getElementById('musicText');
+
+        // Simple Web Audio API Melody Generator if audio file blocked by browser
+        let audioCtx = null;
+        let melodyInterval = null;
+
+        function playSweetMelody() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const notes = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]; // C major notes
+            let step = 0;
+
+            melodyInterval = setInterval(() => {
+                if (!isPlaying) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(notes[step % notes.length], audioCtx.currentTime);
+                
+                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.8);
+                
+                step = (step + Math.floor(Math.random() * 3) + 1) % notes.length;
+            }, 400);
+        }
+
+        musicBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                // Try playing external audio first
+                bgAudio.play().then(() => {
+                    isPlaying = true;
+                    updateMusicUI(true);
+                }).catch(() => {
+                    // Fallback to Web Audio API synth if audio fails
+                    isPlaying = true;
+                    playSweetMelody();
+                    updateMusicUI(true);
+                });
+            } else {
+                isPlaying = false;
+                bgAudio.pause();
+                if (melodyInterval) clearInterval(melodyInterval);
+                updateMusicUI(false);
+            }
+        });
+
+        function updateMusicUI(active) {
+            if (active) {
+                musicIcon.className = "fas fa-heart text-pink-500 animate-ping";
+                musicText.innerText = "Musik Nyala 💕";
+                musicBtn.classList.add("border-pink-400", "bg-pink-50");
+            } else {
+                musicIcon.className = "fas fa-music text-pink-600";
+                musicText.innerText = "Putar Musik 🎵";
+                musicBtn.classList.remove("border-pink-400", "bg-pink-50");
+            }
+        }
+
+        /* ----------------------------------------------------
+         * 3. ENVELOPE TOGGLE
+         * ---------------------------------------------------- */
+        function toggleEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const tip = document.getElementById('letterTip');
+            envelope.classList.toggle('open');
+            
+            if (envelope.classList.contains('open')) {
+                tip.innerText = "✨ Dibuat khusus dengan cinta!";
+                // Trigger subtle heart confetti when opened
+                confetti({
+                    particleCount: 25,
+                    spread: 60,
+                    origin: { y: 0.6 },
+                    colors: ['#ff85a1', '#ffb7b2', '#c8b6ff']
+                });
+            } else {
+                tip.innerText = "👆 Sentuh amplop di atas untuk membaca pesan!";
+            }
+        }
+
+        /* ----------------------------------------------------
+         * 4. CANDLE BLOWOUT & CONFETTI CELEBRATION
+         * ---------------------------------------------------- */
+        let candleBlown = false;
+
+        function blowOutCandle() {
+            if (candleBlown) return;
+
+            const flame = document.getElementById('flame');
+            const smoke = document.getElementById('smoke');
+            const wishStatus = document.getElementById('wishStatus');
+
+            // Extinguish flame
+            flame.classList.add('blown-out');
+            smoke.classList.add('active');
+            candleBlown = true;
+
+            // Update UI
+            wishStatus.innerHTML = `
+                <span class="inline-block bg-green-100 text-green-700 text-xs px-4 py-2 rounded-full font-medium border border-green-200 animate-pulse">
+                    ✨ Yeay! Lilin berhasil ditiup! 🥳
+                </span>
+            `;
+
+            // Trigger Full Screen Confetti Explosion
+            triggerConfettiExplosion();
+
+            // Open Wish Modal after short delay
+            setTimeout(() => {
+                showModal();
+            }, 1200);
+        }
+
+        function triggerConfettiExplosion() {
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                
+                // Confetti from two sides
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+                    colors: ['#ff85a1', '#ffb7b2', '#c8b6ff', '#b5ead7', '#ffdac1']
+                }));
+                confetti(Object.assign({}, defaults, { 
+                    particleCount, 
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+                    colors: ['#ff85a1', '#ffb7b2', '#c8b6ff', '#b5ead7', '#ffdac1']
+                }));
+            }, 250);
+        }
+
+        /* ----------------------------------------------------
+         * 5. MODAL DIALOG CONTROLS
+         * ---------------------------------------------------- */
+        function showModal() {
+            const modal = document.getElementById('wishModal');
+            const modalBox = modal.querySelector('div');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalBox.classList.remove('scale-90');
+                modalBox.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('wishModal');
+            const modalBox = modal.querySelector('div');
+            modal.classList.add('opacity-0');
+            modalBox.classList.remove('scale-100');
+            modalBox.classList.add('scale-90');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        /* ----------------------------------------------------
+         * INITIALIZATION ON PAGE LOAD
+         * ---------------------------------------------------- */
+        window.onload = function () {
+            createParticles();
+        };
+    </script>
+</body>
+</html>
